@@ -1,5 +1,7 @@
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.Scanner;
 
 public class PalindromeChecker {
@@ -7,40 +9,50 @@ public class PalindromeChecker {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("=== UC12: Strategy Pattern for Palindrome Algorithms ===");
+        System.out.println("=== UC13: Performance Comparison ===");
         System.out.print("Enter a string: ");
         String input = sc.nextLine();
 
-        System.out.println("Choose strategy:");
-        System.out.println("1) Stack Strategy");
-        System.out.println("2) Deque Strategy");
-        System.out.print("Enter choice (1/2): ");
-        String choice = sc.nextLine().trim();
+        List<BenchStrategy> strategies = new ArrayList<>();
+        strategies.add(new StackBenchStrategy());
+        strategies.add(new DequeBenchStrategy());
+        strategies.add(new TwoPointerBenchStrategy());
 
-        PalindromeStrategy strategy;
-        if ("2".equals(choice)) {
-            strategy = new DequeStrategy();
-        } else {
-            strategy = new StackStrategy();
+        int iterations = 100000;
+
+        System.out.printf("%-22s %-12s %-18s%n", "Algorithm", "Result", "Time (ns)");
+        System.out.println("----------------------------------------------------------");
+
+        for (BenchStrategy s : strategies) {
+
+            for (int i = 0; i < 10000; i++) s.isPalindrome(input);
+
+            long start = System.nanoTime();
+            boolean last = false;
+            for (int i = 0; i < iterations; i++) {
+                last = s.isPalindrome(input);
+            }
+            long end = System.nanoTime();
+
+            long duration = end - start;
+
+            System.out.printf("%-22s %-12s %-18d%n",
+                    s.name(),
+                    last ? "Palindrome" : "Not",
+                    duration);
         }
-
-        boolean result = strategy.isPalindrome(input);
-
-        System.out.println("Strategy Used: " + strategy.name());
-        System.out.println("Result: " + (result ? "Palindrome ✅" : "Not a Palindrome ❌"));
 
         sc.close();
     }
 }
 
-interface PalindromeStrategy {
+interface BenchStrategy {
     boolean isPalindrome(String input);
     String name();
 }
 
-class StackStrategy implements PalindromeStrategy {
+class StackBenchStrategy implements BenchStrategy {
 
-    @Override
     public boolean isPalindrome(String input) {
         if (input == null) return false;
 
@@ -55,15 +67,13 @@ class StackStrategy implements PalindromeStrategy {
         return true;
     }
 
-    @Override
     public String name() {
         return "StackStrategy";
     }
 }
 
-class DequeStrategy implements PalindromeStrategy {
+class DequeBenchStrategy implements BenchStrategy {
 
-    @Override
     public boolean isPalindrome(String input) {
         if (input == null) return false;
 
@@ -73,15 +83,33 @@ class DequeStrategy implements PalindromeStrategy {
         }
 
         while (deque.size() > 1) {
-            char front = deque.removeFirst();
-            char back = deque.removeLast();
-            if (front != back) return false;
+            if (!deque.removeFirst().equals(deque.removeLast())) return false;
         }
         return true;
     }
 
-    @Override
     public String name() {
         return "DequeStrategy";
+    }
+}
+
+class TwoPointerBenchStrategy implements BenchStrategy {
+
+    public boolean isPalindrome(String input) {
+        if (input == null) return false;
+
+        int left = 0;
+        int right = input.length() - 1;
+
+        while (left < right) {
+            if (input.charAt(left) != input.charAt(right)) return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    public String name() {
+        return "TwoPointerStrategy";
     }
 }
