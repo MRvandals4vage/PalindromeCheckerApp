@@ -1,38 +1,35 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-public class UseCase6PalindromeCheckerApp {
-    public static void main (String[] args)
-    {
-        uc6_QueueStackMethod();
-    }
-    public static void uc6_QueueStackMethod() {
+public class PalindromeChecker
+{public static void main(String[] args)
+{
+    uc7_DequeMethod();
+}
+    public static void uc7_DequeMethod() {
 
-        String input = "civic";
+        String input = "refer";
 
-        Queue<Character> queue = new LinkedList<>();
-        Stack<Character> stack = new Stack<>();
+        Deque<Character> deque = new ArrayDeque<>();
 
+        // Insert characters into deque
         for (char c : input.toCharArray()) {
-            queue.add(c);
-            stack.push(c);
+            deque.add(c);
         }
 
         boolean isPalindrome = true;
 
-        while (!queue.isEmpty()) {
+        // Compare front and rear
+        while (deque.size() > 1) {
 
-            if (!queue.remove().equals(stack.pop())) {
+            if (!deque.removeFirst().equals(deque.removeLast())) {
                 isPalindrome = false;
                 break;
             }
         }
 
-        System.out.println("UC6: Queue + Stack Based Palindrome Check");
+        System.out.println("UC7: Deque-Based Optimized Palindrome Checker");
         System.out.println("Input : " + input);
         System.out.println("Is Palindrome? : " + isPalindrome);
         System.out.println();
-    }
-
-}
+    }}
