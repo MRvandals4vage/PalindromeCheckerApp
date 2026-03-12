@@ -1,35 +1,38 @@
-import java.util.Scanner;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
-public class UseCase5PalindromeCheckerApp {
-    public static boolean isPalindromeUsingStack(String str) {
-        Stack<Character> stack = new Stack();
-        str = str.toLowerCase().replaceAll("[^a-z0-9]", "");
+public class UseCase6PalindromeCheckerApp {
+    public static void main (String[] args)
+    {
+        uc6_QueueStackMethod();
+    }
+    public static void uc6_QueueStackMethod() {
 
-        for (int i = 0; i < str.length(); ++i) {
-            stack.push(str.charAt(i));
+        String input = "civic";
+
+        Queue<Character> queue = new LinkedList<>();
+        Stack<Character> stack = new Stack<>();
+
+        for (char c : input.toCharArray()) {
+            queue.add(c);
+            stack.push(c);
         }
 
-        for (int i = 0; i < str.length(); ++i) {
-            if (str.charAt(i) != (Character) stack.pop()) {
-                return false;
+        boolean isPalindrome = true;
+
+        while (!queue.isEmpty()) {
+
+            if (!queue.remove().equals(stack.pop())) {
+                isPalindrome = false;
+                break;
             }
         }
 
-        return true;
-    }
-
-    public static void main(String []args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter a string: ");
-        String input = scanner.nextLine();
-        boolean result = false;
-        result = isPalindromeUsingStack(input);
-        if (result) {
-            System.out.println("Result: The string IS a palindrome.");
-        } else {
-            System.out.println("Result: The string is NOT a palindrome.");
-        }
+        System.out.println("UC6: Queue + Stack Based Palindrome Check");
+        System.out.println("Input : " + input);
+        System.out.println("Is Palindrome? : " + isPalindrome);
+        System.out.println();
     }
 
 }
